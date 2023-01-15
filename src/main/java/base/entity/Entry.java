@@ -6,6 +6,8 @@ import com.google.gson.JsonParser;
 import java.util.UUID;
 
 public class Entry {
+
+    //test change
     private final UUID objId;
     private JsonObject json;
 
