@@ -6,23 +6,17 @@ import com.google.gson.JsonParser;
 import java.util.UUID;
 
 public class Entry {
-
-    //test change
     private final UUID objId;
     private JsonObject json;
 
     public Entry(String json) {
         this.objId = UUID.randomUUID();
-        this.json = JsonParser.parseString(json).getAsJsonObject();
-    }
-
-    public Entry(JsonObject jsonObject) {
-        this.objId = UUID.randomUUID();
-        this.json = jsonObject;
+        //isValidJson(json);
+        this.json = setJson(json);
     }
 
     public Entry() {
-        this(new JsonObject());
+        this("");
     }
 
     public String getObjId() {
@@ -33,12 +27,17 @@ public class Entry {
         return json;
     }
 
-    public void setJson(JsonObject jsonObject) {
-        this.json = jsonObject;
+
+    public JsonObject setJson(String json) {
+        json = prependId(json);
+        return JsonParser.parseString(json).getAsJsonObject();
     }
 
-    public void setJson(String json) {
-        this.json = JsonParser.parseString(json).getAsJsonObject();
+    private String prependId(String json) {
+        return "{\"id\" : \"" +
+                this.objId +
+                "\", " +
+                json.substring(1);
     }
 
     @Override

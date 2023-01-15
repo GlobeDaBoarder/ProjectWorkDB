@@ -57,22 +57,11 @@ public class EntryList extends ArrayList<Entry> {
     }
 
     private void updateFile(Entry entry){
-//        Gson gson = new Gson();
-//        try {
-//            gson.toJson(entry, new FileWriter(collPath.toString()));
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-//        try {
-//            Files.write(collPath, entry.getJson().toString().getBytes(), StandardOpenOption.APPEND);
-//        }catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
         try (Writer writer = new FileWriter(collPath.toFile(), true)) {
             Gson gson = new GsonBuilder()
-                    .setPrettyPrinting()
                     .create();
-            gson.toJson(entry, writer);
+            gson.toJson(entry.getJson(), writer);
+            writer.write('\n');
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
