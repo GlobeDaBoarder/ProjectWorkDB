@@ -15,6 +15,8 @@ public class Entry {
         this.json = setJson(json);
     }
 
+    //constructor with Object
+
     public Entry() {
         this("");
     }
