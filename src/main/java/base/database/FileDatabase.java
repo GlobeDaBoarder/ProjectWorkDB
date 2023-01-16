@@ -1,6 +1,5 @@
 package base.database;
 
-import base.collection.EntryList;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
@@ -35,22 +34,14 @@ public class FileDatabase implements Database{
         Path pathToCollection = (Path.of(dbPath.toString() + "\\" + collName + ".json"));
 
         File file = new File(pathToCollection.toUri());
-        if (file.exists() && !file.isDirectory()){
-            System.out.println("Such collection already exists");
-
-            //do retrieval of data from file, if exisits
-
-//            EntryList entryList = new EntryList();//temp
-//            return entryList;
-            throw new IllegalArgumentException("file exisits");
-
-            //return new EntryList();
+        if (!file.exists()){
+            System.out.println("file doesn't exist");
+            EntryList entryList = new EntryList(pathToCollection);
+            collections.add(entryList);
+            return entryList;
         }
 
-        EntryList entryList = new EntryList(pathToCollection);
-
-        collections.add(entryList);
-
-        return entryList;
+        System.out.println("file exists");
+        return new EntryList(pathToCollection);
     }
 }

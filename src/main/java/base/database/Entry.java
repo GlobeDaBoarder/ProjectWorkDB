@@ -1,4 +1,4 @@
-package base.entity;
+package base.database;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
