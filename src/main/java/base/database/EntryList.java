@@ -7,6 +7,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.stream.Stream;
 
 public class EntryList extends ArrayList<Entry> {
 
@@ -27,19 +28,25 @@ public class EntryList extends ArrayList<Entry> {
             }
         }
         else {
-
-//        try (Stream<String> stream = Files.lines(Paths.get(fileName))) {
-//            stream.forEach(System.out::println);
-//        }
-            System.out.println("reading file content");
-            try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-                for(String line; (line = br.readLine()) != null; ) {
-                    this.addWithoutUpdate(new Entry(line));
-                }
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            useCollection(pathToColl);
         }
+    }
+
+    public void useCollection(Path pathToColl) {
+        try (Stream<String> lines = Files.lines(pathToColl)) {
+            lines
+                    .forEach(line -> this.addWithoutUpdate(new Entry(line)));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+//        System.out.println("reading file content");
+//        try (BufferedReader br = new BufferedReader(new FileReader(new File(pathToColl.toUri())))) {
+//            for(String line; (line = br.readLine()) != null; ) {
+//                this.addWithoutUpdate(new Entry(line));
+//            }
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
     }
 
     public Entry getById(String uuid){
