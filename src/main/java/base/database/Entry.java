@@ -7,52 +7,48 @@ import java.util.UUID;
 
 public class Entry {
 
+    private final JsonObject fullJson;
 
-    private final UUID objId;
-    private JsonObject json;
+    static Entry createEntry(String jsonParams){
+        return new Entry(
+                prependId(
+                        UUID.randomUUID(),
+                        jsonParams
+                )
+        );
+    }
 
-    public Entry(String json) {
-        this.objId = UUID.randomUUID();
+    private static String prependId(UUID uuid, String jsonParams) {
+        return "{\"id\" : \"" +
+                uuid +
+                "\", " +
+                jsonParams.substring(1);
+    }
+
+    static Entry readExistingEntry(String fullJson){
+        return new Entry(fullJson);
+    }
+
+    private Entry(String fullJson) {
         //isValidJson(json);
-        this.json = setJson(json);
+        this.fullJson = JsonParser.parseString(fullJson).getAsJsonObject();
     }
 
-    //constructor with Object
-
-    public Entry() {
-        this("");
-    }
-
-    public UUID getObjId() {
-        return objId;
+    public UUID getUUID() {
+        return UUID.fromString(this.fullJson.get("id").getAsString());
     }
 
     public JsonObject getJson() {
-        return json;
-    }
-
-
-    public JsonObject setJson(String json) {
-        json = prependId(json);
-        return JsonParser.parseString(json).getAsJsonObject();
-    }
-
-    private String prependId(String json) {
-        return "{\"id\" : \"" +
-                this.objId +
-                "\", " +
-                json.substring(1);
-    }
-
-    @Override
-    public String toString() {
-        return "Entry{" +
-                "objId=" + objId +
-                ", json=" + json.toString() +
-                '}';
+        return fullJson;
     }
 
     //equals & hashCode
 
 
+    @Override
+    public String toString() {
+        return "Entry{" +
+                "fullJson=" + fullJson +
+                '}';
+    }
 }

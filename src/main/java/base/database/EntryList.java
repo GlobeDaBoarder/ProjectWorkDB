@@ -2,20 +2,17 @@ package base.database;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Stream;
 
 public class EntryList {
 
     //make multi threaded
-    private LinkedHashMap<UUID, JsonObject> collection;
+    private LinkedHashMap<UUID, Entry> collection;
 
     private final String collectionName;
     private final Path collPath;
@@ -42,49 +39,29 @@ public class EntryList {
     public void useCollection(Path pathToColl) {
         try (Stream<String> lines = Files.lines(pathToColl)) {
             lines
-                    .forEach(line -> this.addWithoutUpdate(line));
+                    .forEach(this::readEntryIntoCollection);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-//    public Entry getById(String uuid){
-//        for (Entry currentEntry : this) {
-//            if (uuid.equals(currentEntry.getObjId())) {
-//                return currentEntry;
-//            }
-//        }
-//
-//        System.err.println("No entity with UUID = " + uuid );
-//        return new Entry();
-//    }
-//
-//    @Override
-//    public boolean add(Entry entry) {
-//        boolean flag = super.add(entry);
-//        if(flag)
-//            updateFile(entry);
-//        return flag;
-//    }
-//
-//    @Override
-//    public void add(int index, Entry entry) {
-//        super.add(index, entry);
-//        updateFile(entry);
-//    }
-////
-//    private void addWithoutUpdate(Entry entry){
-//        super.add(entry);
-//    }
-
-    public void add(String jsonBody){
-        updateFile(addWithoutUpdate(jsonBody));
+    private void readEntryIntoCollection(String fullJson){
+        Entry existingEntry = Entry.readExistingEntry(fullJson);
+        this.collection.put(existingEntry.getUUID(), existingEntry);
     }
 
-    private Entry addWithoutUpdate(String jsonBody){
-        Entry createdEntry = new Entry(jsonBody);
-        this.collection.put(createdEntry.getObjId(), createdEntry.getJson());
-        return createdEntry;
+    public EntryList add(String jsonBody){
+        Entry newEntry = Entry.createEntry(jsonBody);
+        this.collection.put(newEntry.getUUID(), newEntry);
+        updateFile(newEntry);
+        return this;
+    }
+
+    public EntryList addAll(String... jsonBodies){
+        for (String jsonBody : jsonBodies) {
+            add(jsonBody);
+        }
+        return this;
     }
 
     private void updateFile(Entry entry){
@@ -97,6 +74,31 @@ public class EntryList {
             throw new RuntimeException(e);
         }
     }
+
+    public void printAll(){
+        getAll().forEach(System.out::println);
+    }
+
+    public void pintWithId (String searchUuid){
+        System.out.println(getById(searchUuid));
+    }
+
+    public void printWithIndex(int index){
+        System.out.println(get(index));
+    }
+    public Entry get(int index){
+        return (Entry) this.collection.values().toArray()[index];
+    }
+
+    public Collection<Entry> getAll(){
+        return this.collection.values();
+    }
+
+    public Entry getById(String searchUuid){
+        return this.collection.get(UUID.fromString(searchUuid));
+    }
+
+
 
     public String getCollectionName() {
         return collectionName;
