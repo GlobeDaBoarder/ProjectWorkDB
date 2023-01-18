@@ -2,14 +2,20 @@ package base.database;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.UUID;
 import java.util.stream.Stream;
 
-public class EntryList extends ArrayList<Entry> {
+public class EntryList {
+
+    //make multi threaded
+    private LinkedHashMap<UUID, JsonObject> collection;
 
     private final String collectionName;
     private final Path collPath;
@@ -17,6 +23,7 @@ public class EntryList extends ArrayList<Entry> {
     EntryList(Path pathToColl) {
         this.collectionName = pathToColl.getFileName().toString();
         this.collPath = pathToColl;
+        this.collection = new LinkedHashMap<>();
 
         File file = new File(pathToColl.toUri());
         if (!file.exists()){
@@ -39,14 +46,6 @@ public class EntryList extends ArrayList<Entry> {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-//        System.out.println("reading file content");
-//        try (BufferedReader br = new BufferedReader(new FileReader(new File(pathToColl.toUri())))) {
-//            for(String line; (line = br.readLine()) != null; ) {
-//                this.addWithoutUpdate(new Entry(line));
-//            }
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
     }
 
     public Entry getById(String uuid){
