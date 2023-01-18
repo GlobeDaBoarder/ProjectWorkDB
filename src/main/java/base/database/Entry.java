@@ -23,8 +23,8 @@ public class Entry {
         this("");
     }
 
-    public String getObjId() {
-        return objId.toString();
+    public UUID getObjId() {
+        return objId;
     }
 
     public JsonObject getJson() {

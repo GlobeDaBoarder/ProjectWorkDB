@@ -42,39 +42,49 @@ public class EntryList {
     public void useCollection(Path pathToColl) {
         try (Stream<String> lines = Files.lines(pathToColl)) {
             lines
-                    .forEach(line -> this.addWithoutUpdate(new Entry(line)));
+                    .forEach(line -> this.addWithoutUpdate(line));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public Entry getById(String uuid){
-        for (Entry currentEntry : this) {
-            if (uuid.equals(currentEntry.getObjId())) {
-                return currentEntry;
-            }
-        }
+//    public Entry getById(String uuid){
+//        for (Entry currentEntry : this) {
+//            if (uuid.equals(currentEntry.getObjId())) {
+//                return currentEntry;
+//            }
+//        }
+//
+//        System.err.println("No entity with UUID = " + uuid );
+//        return new Entry();
+//    }
+//
+//    @Override
+//    public boolean add(Entry entry) {
+//        boolean flag = super.add(entry);
+//        if(flag)
+//            updateFile(entry);
+//        return flag;
+//    }
+//
+//    @Override
+//    public void add(int index, Entry entry) {
+//        super.add(index, entry);
+//        updateFile(entry);
+//    }
+////
+//    private void addWithoutUpdate(Entry entry){
+//        super.add(entry);
+//    }
 
-        System.err.println("No entity with UUID = " + uuid );
-        return new Entry();
+    public void add(String jsonBody){
+        updateFile(addWithoutUpdate(jsonBody));
     }
 
-    @Override
-    public boolean add(Entry entry) {
-        boolean flag = super.add(entry);
-        if(flag)
-            updateFile(entry);
-        return flag;
-    }
-
-    @Override
-    public void add(int index, Entry entry) {
-        super.add(index, entry);
-        updateFile(entry);
-    }
-
-    private void addWithoutUpdate(Entry entry){
-        super.add(entry);
+    private Entry addWithoutUpdate(String jsonBody){
+        Entry createdEntry = new Entry(jsonBody);
+        this.collection.put(createdEntry.getObjId(), createdEntry.getJson());
+        return createdEntry;
     }
 
     private void updateFile(Entry entry){
