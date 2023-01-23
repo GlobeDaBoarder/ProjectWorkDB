@@ -1,8 +1,11 @@
 package base.database;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 public class Entry {
@@ -50,5 +53,18 @@ public class Entry {
         return "Entry{" +
                 "fullJson=" + fullJson +
                 '}';
+    }
+
+    public void editEntry(String newValueJsonString) {
+        Set<Map.Entry<String, JsonElement>> newValuesSet = JsonParser.parseString(newValueJsonString).getAsJsonObject().entrySet();
+        for (Map.Entry<String, JsonElement> newValue : newValuesSet) {
+//            if(this.fullJson.has(newValue.getKey())){
+//                this.fullJson.add(newValue.getKey(), newValue.getValue());
+//            }
+//            else {
+//                this.fullJson.add();
+//            }
+            this.fullJson.add(newValue.getKey(), newValue.getValue());
+        }
     }
 }

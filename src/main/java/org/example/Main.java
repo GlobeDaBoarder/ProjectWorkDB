@@ -1,6 +1,8 @@
 package org.example;
 
-import base.database.*;
+import base.database.Entry;
+import base.database.EntryList;
+import base.database.FileDatabaseFactory;
 import java.util.List;
 
 public class Main {
@@ -16,10 +18,15 @@ public class Main {
 //                )
 //                .add("{noname:empty}");
 
-        List<Entry> list = collection.getWhere("{name:Globe, surname:Ivashyn}");
-        System.out.println(list);
+//        List<Entry> list = collection.getWhere("{name:Globe, surname:Ivashyn}");
+//        System.out.println(list);
+//
+//        List<Entry> list1 = collection.getWhereKeyExists("name", "surname", "hobby");
+//        System.out.println(list1);
 
-        List<Entry> list1 = collection.getWhereKeyExists("name", "surname", "hobby");
-        System.out.println(list1);
+        collection.printAll();
+        collection.update("{name:Globe, surname:Ivashyn}", "{surname:Hakkem, age:20}");
+        collection.printAll();
+
     }
 }

@@ -77,6 +77,7 @@ public class EntryList {
 
     public void printAll(){
         getAll().forEach(System.out::println);
+        System.out.println('\n');
     }
 
     public void pintWithId (String searchUuid){
@@ -120,6 +121,13 @@ public class EntryList {
         }
 
         return resultEntryStream.collect(Collectors.toList());
+    }
+
+    public void update(String searchJsonString, String newValueJsonString){
+        List<Entry> entriesToEdit = getWhere(searchJsonString);
+        for (Entry entry : entriesToEdit) {
+            this.collection.get(entry.getUUID()).editEntry(newValueJsonString);
+        }
     }
 
     public String getCollectionName() {
