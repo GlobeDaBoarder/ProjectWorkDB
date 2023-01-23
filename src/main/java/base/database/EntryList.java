@@ -100,16 +100,26 @@ public class EntryList {
 
     public List<Entry> getWhere(String searchJsonString) {
         Set<Map.Entry<String, JsonElement>> searchMap = JsonParser.parseString(searchJsonString).getAsJsonObject().entrySet();
-        Map.Entry<String, JsonElement> searchValue = searchMap.iterator().next();
+        
+        Stream<Entry> resultEntryStream = this.collection.values().stream();
 
-        return  this.collection.values().stream()
-                .filter(entry -> entry.getJson().has(searchValue.getKey()))
-                .filter(entry -> entry.getJson().get(searchValue.getKey()).equals(searchValue.getValue()))
-                .collect(Collectors.toList());
+        for (Map.Entry<String, JsonElement> searchValue : searchMap) {
+            resultEntryStream = resultEntryStream
+                    .filter(entry -> entry.getJson().has(searchValue.getKey()))
+                    .filter(entry -> entry.getJson().get(searchValue.getKey()).equals(searchValue.getValue()));
+        }
+
+        return resultEntryStream.collect(Collectors.toList());
     }
 
-    public List<Entry> getWhereKeyExists(String searchKeyString){
-        return null;
+    public List<Entry> getWhereKeyExists(String... searchKeyStrings){
+        Stream<Entry> resultEntryStream = this.collection.values().stream();
+        for (String searchKeyString : searchKeyStrings) {
+            resultEntryStream = resultEntryStream
+                    .filter(entry -> entry.getJson().has(searchKeyString));
+        }
+
+        return resultEntryStream.collect(Collectors.toList());
     }
 
     public String getCollectionName() {
