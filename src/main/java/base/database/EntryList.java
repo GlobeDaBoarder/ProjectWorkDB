@@ -53,7 +53,7 @@ public class EntryList {
     public EntryList add(String jsonBody){
         Entry newEntry = Entry.createEntry(jsonBody);
         this.collection.put(newEntry.getUUID(), newEntry);
-        updateFile(newEntry);
+        addToFile(newEntry);
         return this;
     }
 
@@ -64,12 +64,21 @@ public class EntryList {
         return this;
     }
 
-    private void updateFile(Entry entry){
+    private void addToFile(Entry entry){
         try (Writer writer = new FileWriter(collPath.toFile(), true)) {
             Gson gson = new GsonBuilder()
+                    //.setPrettyPrinting()
                     .create();
             gson.toJson(entry.getJson(), writer);
             writer.write('\n');
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void commitToFile(){
+        try (Writer writer = new FileWriter(collPath.toFile(), false)) {
+            this.collection.values().forEach(this::addToFile);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -123,12 +132,16 @@ public class EntryList {
         return resultEntryStream.collect(Collectors.toList());
     }
 
-    public void update(String searchJsonString, String newValueJsonString){
+    public EntryList update(String searchJsonString, String newValueJsonString){
         List<Entry> entriesToEdit = getWhere(searchJsonString);
         for (Entry entry : entriesToEdit) {
             this.collection.get(entry.getUUID()).editEntry(newValueJsonString);
         }
+        commitToFile();
+        return this;
     }
+
+
 
     public String getCollectionName() {
         return collectionName;
