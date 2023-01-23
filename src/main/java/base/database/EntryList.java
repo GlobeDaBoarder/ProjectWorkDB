@@ -1,18 +1,18 @@
 package base.database;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.*;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class EntryList {
 
     //make multi threaded
-    private LinkedHashMap<UUID, Entry> collection;
+    private Map<UUID, Entry> collection;
 
     private final String collectionName;
     private final Path collPath;
@@ -98,7 +98,19 @@ public class EntryList {
         return this.collection.get(UUID.fromString(searchUuid));
     }
 
+    public List<Entry> getWhere(String searchJsonString) {
+        Set<Map.Entry<String, JsonElement>> searchMap = JsonParser.parseString(searchJsonString).getAsJsonObject().entrySet();
+        Map.Entry<String, JsonElement> searchValue = searchMap.iterator().next();
 
+        return  this.collection.values().stream()
+                .filter(entry -> entry.getJson().has(searchValue.getKey()))
+                .filter(entry -> entry.getJson().get(searchValue.getKey()).equals(searchValue.getValue()))
+                .collect(Collectors.toList());
+    }
+
+    public List<Entry> getWhereKeyExists(String searchKeyString){
+        return null;
+    }
 
     public String getCollectionName() {
         return collectionName;
@@ -107,4 +119,5 @@ public class EntryList {
     public Path getCollPath() {
         return collPath;
     }
+
 }
