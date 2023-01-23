@@ -67,4 +67,8 @@ public class Entry {
             this.fullJson.add(newValue.getKey(), newValue.getValue());
         }
     }
+
+    public void removeField(String keyToRemove) {
+        this.fullJson.remove(keyToRemove);
+    }
 }

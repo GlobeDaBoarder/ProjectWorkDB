@@ -134,8 +134,8 @@ public class EntryList {
 
     public EntryList update(String searchJsonString, String newValueJsonString){
         List<Entry> entriesToEdit = getWhere(searchJsonString);
-        for (Entry entry : entriesToEdit) {
-            this.collection.get(entry.getUUID()).editEntry(newValueJsonString);
+        for (Entry entryToDelete : entriesToEdit) {
+            this.collection.get(entryToDelete.getUUID()).editEntry(newValueJsonString);
         }
         commitToFile();
         return this;
@@ -151,4 +151,13 @@ public class EntryList {
         return collPath;
     }
 
+    public void removeEntryField(String searchJsonString, String... keysOfFieldToRemove) {
+        List<Entry> entriesToRemoveFieldsFrom =  getWhere(searchJsonString);
+        for (Entry entryToRemoveFieldsFrom : entriesToRemoveFieldsFrom) {
+            for (String keyToRemove : keysOfFieldToRemove) {
+                this.collection.get(entryToRemoveFieldsFrom.getUUID()).removeField(keyToRemove);
+            }
+        }
+        commitToFile();
+    }
 }
