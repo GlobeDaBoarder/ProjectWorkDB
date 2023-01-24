@@ -14,17 +14,16 @@ public class EntryList {
     //make multi threaded
     private Map<UUID, Entry> collection;
 
-    private final String collectionName;
-    private final Path collPath;
+    private String collectionName;
+    private Path collectionPath;
 
     EntryList(Path pathToColl) {
         this.collectionName = pathToColl.getFileName().toString();
-        this.collPath = pathToColl;
+        this.collectionPath = pathToColl;
         this.collection = new LinkedHashMap<>();
 
         File file = new File(pathToColl.toUri());
         if (!file.exists()){
-            System.out.println("creating file");
             try {
                 Files.createFile(pathToColl);
             } catch (IOException e) {
@@ -32,17 +31,23 @@ public class EntryList {
             }
         }
         else {
-            useCollection(pathToColl);
+            loadCollection(pathToColl);
         }
     }
 
-    public void useCollection(Path pathToColl) {
-        try (Stream<String> lines = Files.lines(pathToColl)) {
+    private void loadCollection(Path collectionPath){
+        try (Stream<String> lines = Files.lines(collectionPath)) {
             lines
                     .forEach(this::readEntryIntoCollection);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public EntryList useCollection(Path collectionPath) {
+        loadCollection(collectionPath);
+        commitToFile();
+        return this;
     }
 
     private void readEntryIntoCollection(String fullJson){
@@ -65,7 +70,7 @@ public class EntryList {
     }
 
     private void addToFile(Entry entry){
-        try (Writer writer = new FileWriter(collPath.toFile(), true)) {
+        try (Writer writer = new FileWriter(collectionPath.toFile(), true)) {
             Gson gson = new GsonBuilder()
                     //.setPrettyPrinting()
                     .create();
@@ -76,17 +81,18 @@ public class EntryList {
         }
     }
 
-    private void commitToFile(){
-        try (Writer writer = new FileWriter(collPath.toFile(), false)) {
+    public void commitToFile(){
+        try (Writer writer = new FileWriter(collectionPath.toFile(), false)) {
             this.collection.values().forEach(this::addToFile);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void printAll(){
+    public EntryList printAll(){
         getAll().forEach(System.out::println);
         System.out.println('\n');
+        return this;
     }
 
     public void pintWithId (String searchUuid){
@@ -94,9 +100,9 @@ public class EntryList {
     }
 
     public void printWithIndex(int index){
-        System.out.println(get(index));
+        System.out.println(getByIndex(index));
     }
-    public Entry get(int index){
+    public Entry getByIndex(int index){
         return (Entry) this.collection.values().toArray()[index];
     }
 
@@ -141,17 +147,15 @@ public class EntryList {
         return this;
     }
 
-
-
     public String getCollectionName() {
         return collectionName;
     }
 
-    public Path getCollPath() {
-        return collPath;
+    public Path getCollectionPath() {
+        return collectionPath;
     }
 
-    public void removeEntryField(String searchJsonString, String... keysOfFieldToRemove) {
+    public EntryList removeEntryField(String searchJsonString, String... keysOfFieldToRemove) {
         List<Entry> entriesToRemoveFieldsFrom =  getWhere(searchJsonString);
         for (Entry entryToRemoveFieldsFrom : entriesToRemoveFieldsFrom) {
             for (String keyToRemove : keysOfFieldToRemove) {
@@ -159,5 +163,47 @@ public class EntryList {
             }
         }
         commitToFile();
+        return this;
+    }
+
+    public EntryList remove(String searchJsonString) {
+        List<Entry> entriesToDelete = getWhere(searchJsonString);
+        for (Entry entryToDelete : entriesToDelete) {
+            this.collection.remove(entryToDelete.getUUID());
+        }
+        commitToFile();
+        return this;
+    }
+
+
+    public void clear() {
+        this.collection.clear();
+        commitToFile();
+    }
+
+    public void delete() {
+        try {
+            Files.delete(this.collectionPath);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        this.collection = null;
+        this.collectionPath = null;
+        this.collectionName = null;
+    }
+
+    public int size(){
+        return this.collection.size();
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        this.collection.values().forEach(entry -> {
+            stringBuilder.append(entry.getJson().toString());
+            stringBuilder.append("\n");
+        });
+
+        return stringBuilder.toString();
     }
 }

@@ -45,16 +45,6 @@ public class Entry {
         return fullJson;
     }
 
-    //equals & hashCode
-
-
-    @Override
-    public String toString() {
-        return "Entry{" +
-                "fullJson=" + fullJson +
-                '}';
-    }
-
     public void editEntry(String newValueJsonString) {
         Set<Map.Entry<String, JsonElement>> newValuesSet = JsonParser.parseString(newValueJsonString).getAsJsonObject().entrySet();
         for (Map.Entry<String, JsonElement> newValue : newValuesSet) {
@@ -70,5 +60,16 @@ public class Entry {
 
     public void removeField(String keyToRemove) {
         this.fullJson.remove(keyToRemove);
+    }
+
+
+    //equals & hashCode
+
+
+    @Override
+    public String toString() {
+        return "Entry{" +
+                "fullJson=" + fullJson +
+                '}';
     }
 }

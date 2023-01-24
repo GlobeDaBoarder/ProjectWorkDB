@@ -48,7 +48,6 @@ public class FileDatabase implements Database{
 
         File file = new File(pathToCollection.toUri());
         if (!file.exists()){
-            System.out.println("file doesn't exist");
             EntryList entryList = new EntryList(pathToCollection);
             collections.add(entryList);
             return entryList;
