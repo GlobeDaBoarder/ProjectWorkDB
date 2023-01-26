@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-public abstract class DatabaseAbstract implements Database {
+abstract class DatabaseAbstract implements Database {
     protected final String dbName;
     protected final Path dbPath;
     protected final List<CollectionOfDatabase> collections;

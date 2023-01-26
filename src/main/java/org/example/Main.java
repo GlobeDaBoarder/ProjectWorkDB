@@ -1,7 +1,6 @@
 package org.example;
 
-import base.database.AutoCommitDatabaseFactory;
-import base.database.CollectionOfDatabase;
+import base.database.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -39,6 +38,13 @@ public class Main {
 //        collection.remove("{name:Globe}");
 //
 //        collection.clear();
+
+        ManualCommitDatabaseFactory factory = new ManualCommitDatabaseFactory();
+        ManualCommitDatabase db = factory.createDatabase("mainDb");
+        ManualCommitCollection collection = db.createCollection("col1");
+        collection.add("{name:Globe}");
+        Entry entry = collection.getByIndex(0);
+
 
     }
 }

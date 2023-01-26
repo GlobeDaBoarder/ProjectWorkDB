@@ -15,13 +15,13 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class CollectionOfDatabaseAbstract implements CollectionOfDatabase {
+class CollectionOfDatabaseAbstract implements CollectionOfDatabase {
     //make multi threaded
     protected Map<UUID, Entry> collection;
     protected String collectionName;
     protected Path collectionPath;
 
-    public CollectionOfDatabaseAbstract(Path pathToColl) {
+    CollectionOfDatabaseAbstract(Path pathToColl) {
         this.collection = new LinkedHashMap<>();
         this.collectionName = pathToColl.getFileName().toString();
         this.collectionPath = pathToColl;
