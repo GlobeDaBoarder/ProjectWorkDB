@@ -1,8 +1,7 @@
 package base.CLI.Subcommands;
 
 import base.database.DatabaseFactory;
-import base.database.FileDatabaseFactory;
-import picocli.CommandLine;
+import base.database.AutoCommitDatabaseFactory;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
@@ -18,7 +17,7 @@ public class CreateDbCommand implements Runnable{
 
     @Override
     public void run() {
-        DatabaseFactory factory = new FileDatabaseFactory();
+        DatabaseFactory factory = new AutoCommitDatabaseFactory();
         factory.createDatabase(name);
         System.out.println("created database");
     }

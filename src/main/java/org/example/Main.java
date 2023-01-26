@@ -1,16 +1,14 @@
 package org.example;
 
-import base.database.Entry;
-import base.database.EntryList;
-import base.database.FileDatabaseFactory;
-import java.util.List;
+import base.database.AutoCommitCollection;
+import base.database.AutoCommitDatabaseFactory;
 
 public class Main {
     public static void main(String[] args) {
 
         //               CRUD
         //CREATE
-        EntryList collection = new FileDatabaseFactory()
+        AutoCommitCollection collection = new AutoCommitDatabaseFactory()
                 .createDatabase("db")
                 .createCollection("col1");
 //                .add("{\"name\":\"Baeldung\",\"java\":\"true\"}")

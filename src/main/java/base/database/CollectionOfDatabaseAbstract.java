@@ -1,41 +1,32 @@
 package base.database;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 
-import java.io.*;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class EntryList {
-
+public class CollectionOfDatabaseAbstract implements CollectionOfDatabase {
     //make multi threaded
-    private Map<UUID, Entry> collection;
+    protected Map<UUID, Entry> collection;
+    protected String collectionName;
+    protected Path collectionPath;
 
-    private String collectionName;
-    private Path collectionPath;
-
-    EntryList(Path pathToColl) {
+    public CollectionOfDatabaseAbstract(Path pathToColl) {
+        this.collection = new LinkedHashMap<>();
         this.collectionName = pathToColl.getFileName().toString();
         this.collectionPath = pathToColl;
-        this.collection = new LinkedHashMap<>();
-
-        File file = new File(pathToColl.toUri());
-        if (!file.exists()){
-            try {
-                Files.createFile(pathToColl);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        else {
-            loadCollection(pathToColl);
-        }
     }
 
-    private void loadCollection(Path collectionPath){
+    protected void loadCollection(Path collectionPath) {
         try (Stream<String> lines = Files.lines(collectionPath)) {
             lines
                     .forEach(this::readEntryIntoCollection);
@@ -44,32 +35,35 @@ public class EntryList {
         }
     }
 
-    public EntryList useCollection(Path collectionPath) {
+    @Override
+    public CollectionOfDatabase useCollection(Path collectionPath) {
         loadCollection(collectionPath);
         commitToFile();
         return this;
     }
 
-    private void readEntryIntoCollection(String fullJson){
+    private void readEntryIntoCollection(String fullJson) {
         Entry existingEntry = Entry.readExistingEntry(fullJson);
         this.collection.put(existingEntry.getUUID(), existingEntry);
     }
 
-    public EntryList add(String jsonBody){
+    @Override
+    public CollectionOfDatabase add(String jsonBody) {
         Entry newEntry = Entry.createEntry(jsonBody);
         this.collection.put(newEntry.getUUID(), newEntry);
         addToFile(newEntry);
         return this;
     }
 
-    public EntryList addAll(String... jsonBodies){
+    @Override
+    public CollectionOfDatabase addAll(String... jsonBodies) {
         for (String jsonBody : jsonBodies) {
             add(jsonBody);
         }
         return this;
     }
 
-    private void addToFile(Entry entry){
+    private void addToFile(Entry entry) {
         try (Writer writer = new FileWriter(collectionPath.toFile(), true)) {
             Gson gson = new GsonBuilder()
                     //.setPrettyPrinting()
@@ -81,7 +75,8 @@ public class EntryList {
         }
     }
 
-    public void commitToFile(){
+    @Override
+    public void commitToFile() {
         try (Writer writer = new FileWriter(collectionPath.toFile(), false)) {
             this.collection.values().forEach(this::addToFile);
         } catch (IOException e) {
@@ -89,34 +84,42 @@ public class EntryList {
         }
     }
 
-    public EntryList printAll(){
+    @Override
+    public CollectionOfDatabase printAll() {
         getAll().forEach(System.out::println);
         System.out.println('\n');
         return this;
     }
 
-    public void pintWithId (String searchUuid){
+    @Override
+    public void pintWithId(String searchUuid) {
         System.out.println(getById(searchUuid));
     }
 
-    public void printWithIndex(int index){
+    @Override
+    public void printWithIndex(int index) {
         System.out.println(getByIndex(index));
     }
-    public Entry getByIndex(int index){
+
+    @Override
+    public Entry getByIndex(int index) {
         return (Entry) this.collection.values().toArray()[index];
     }
 
-    public Collection<Entry> getAll(){
+    @Override
+    public Collection<Entry> getAll() {
         return this.collection.values();
     }
 
-    public Entry getById(String searchUuid){
+    @Override
+    public Entry getById(String searchUuid) {
         return this.collection.get(UUID.fromString(searchUuid));
     }
 
+    @Override
     public List<Entry> getWhere(String searchJsonString) {
         Set<Map.Entry<String, JsonElement>> searchMap = JsonParser.parseString(searchJsonString).getAsJsonObject().entrySet();
-        
+
         Stream<Entry> resultEntryStream = this.collection.values().stream();
 
         for (Map.Entry<String, JsonElement> searchValue : searchMap) {
@@ -128,7 +131,8 @@ public class EntryList {
         return resultEntryStream.collect(Collectors.toList());
     }
 
-    public List<Entry> getWhereKeyExists(String... searchKeyStrings){
+    @Override
+    public List<Entry> getWhereKeyExists(String... searchKeyStrings) {
         Stream<Entry> resultEntryStream = this.collection.values().stream();
         for (String searchKeyString : searchKeyStrings) {
             resultEntryStream = resultEntryStream
@@ -138,7 +142,8 @@ public class EntryList {
         return resultEntryStream.collect(Collectors.toList());
     }
 
-    public EntryList update(String searchJsonString, String newValueJsonString){
+    @Override
+    public CollectionOfDatabase update(String searchJsonString, String newValueJsonString) {
         List<Entry> entriesToEdit = getWhere(searchJsonString);
         for (Entry entryToDelete : entriesToEdit) {
             this.collection.get(entryToDelete.getUUID()).editEntry(newValueJsonString);
@@ -147,16 +152,19 @@ public class EntryList {
         return this;
     }
 
+    @Override
     public String getCollectionName() {
         return collectionName;
     }
 
+    @Override
     public Path getCollectionPath() {
         return collectionPath;
     }
 
-    public EntryList removeEntryField(String searchJsonString, String... keysOfFieldToRemove) {
-        List<Entry> entriesToRemoveFieldsFrom =  getWhere(searchJsonString);
+    @Override
+    public CollectionOfDatabase removeEntryField(String searchJsonString, String... keysOfFieldToRemove) {
+        List<Entry> entriesToRemoveFieldsFrom = getWhere(searchJsonString);
         for (Entry entryToRemoveFieldsFrom : entriesToRemoveFieldsFrom) {
             for (String keyToRemove : keysOfFieldToRemove) {
                 this.collection.get(entryToRemoveFieldsFrom.getUUID()).removeField(keyToRemove);
@@ -166,7 +174,8 @@ public class EntryList {
         return this;
     }
 
-    public EntryList remove(String searchJsonString) {
+    @Override
+    public CollectionOfDatabase remove(String searchJsonString) {
         List<Entry> entriesToDelete = getWhere(searchJsonString);
         for (Entry entryToDelete : entriesToDelete) {
             this.collection.remove(entryToDelete.getUUID());
@@ -175,12 +184,13 @@ public class EntryList {
         return this;
     }
 
-
+    @Override
     public void clear() {
         this.collection.clear();
         commitToFile();
     }
 
+    @Override
     public void delete() {
         try {
             Files.delete(this.collectionPath);
@@ -192,7 +202,8 @@ public class EntryList {
         this.collectionName = null;
     }
 
-    public int size(){
+    @Override
+    public int size() {
         return this.collection.size();
     }
 
