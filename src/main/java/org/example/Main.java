@@ -1,16 +1,16 @@
 package org.example;
 
-import base.database.AutoCommitCollection;
 import base.database.AutoCommitDatabaseFactory;
+import base.database.CollectionOfDatabase;
 
 public class Main {
     public static void main(String[] args) {
 
         //               CRUD
         //CREATE
-        AutoCommitCollection collection = new AutoCommitDatabaseFactory()
-                .createDatabase("db")
-                .createCollection("col1");
+//        CollectionOfDatabase collection = new AutoCommitDatabaseFactory()
+//                .createDatabase("db")
+//                .createCollection("col1");
 //                .add("{\"name\":\"Baeldung\",\"java\":\"true\"}")
 //                .add("{name:Globe, surname:Ivashyn}")
 //                .addAll(
@@ -29,7 +29,7 @@ public class Main {
 //        System.out.println(collection.getWhereKeyExists("name", "surname"));
 
 
-
+//
 //        collection.printAll()
 //                .update("{name:Globe, surname:Ivashyn}", "{surname:Hakkem, age:20}")
 //                .printAll();

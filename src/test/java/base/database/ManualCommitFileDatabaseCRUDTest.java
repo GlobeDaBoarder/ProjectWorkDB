@@ -8,16 +8,17 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class AutomaticCommitAutoCommitFileDatabaseCRUDTest {
+class ManualCommitFileDatabaseCRUDTest {
 
     CollectionOfDatabase collection;
 
     @BeforeEach
     void init(){
-        this.collection = new AutoCommitDatabaseFactory()
-                .createDatabase("testDB")
+        this.collection = new ManualCommitDatabaseFactory()
+                .createDatabase("testDBManual")
                 .createCollection("testCollection")
                 .useCollection(Path.of("src/test/resources/sampleCollection.json"));
     }
@@ -30,6 +31,9 @@ public class AutomaticCommitAutoCommitFileDatabaseCRUDTest {
 
     @Test
     void testCreate() throws IOException {
+        assertEquals(0, Files.size(this.collection.getCollectionPath()));
+        assertEquals(7, this.collection.size());
+        this.collection.commitToFile();
         assertEquals(521, Files.size(this.collection.getCollectionPath()));
         assertEquals(7, this.collection.size());
         System.out.println(this.collection);
@@ -47,6 +51,9 @@ public class AutomaticCommitAutoCommitFileDatabaseCRUDTest {
                 .add("{noname:empty}")
                 .add("{name:Globe, surname:Ivashyn222}")
                 .add("{name:Globe, surname:Ivashyn, hobby:sb}");
+        assertEquals(0, Files.size(this.collection.getCollectionPath()));
+        assertEquals(14, this.collection.size());
+        this.collection.commitToFile();
         assertEquals(1042, Files.size(this.collection.getCollectionPath()));
         assertEquals(14, this.collection.size());
 
@@ -95,6 +102,9 @@ public class AutomaticCommitAutoCommitFileDatabaseCRUDTest {
     void testUpdate() throws IOException {
         this.collection.update("{name:Globe, surname:Ivashyn}",
                 "{surname:Hakkem, age:20}");
+        assertEquals(0, Files.size(this.collection.getCollectionPath()));
+        assertEquals(7, this.collection.size());
+        this.collection.commitToFile();
         assertEquals(537, Files.size(this.collection.getCollectionPath()));
         assertEquals(7, this.collection.size());
 
@@ -105,8 +115,12 @@ public class AutomaticCommitAutoCommitFileDatabaseCRUDTest {
     void testRemoveEntryField() throws IOException {
         this.collection.removeEntryField("{name:Globe, surname:Ivashyn}",
                 "surname", "hobby", "age");
+        assertEquals(0, Files.size(this.collection.getCollectionPath()));
+        assertEquals(7, this.collection.size());
+        this.collection.commitToFile();
         assertEquals(468, Files.size(this.collection.getCollectionPath()));
         assertEquals(7, this.collection.size());
+
 
         System.out.println(this.collection);
     }
@@ -114,8 +128,12 @@ public class AutomaticCommitAutoCommitFileDatabaseCRUDTest {
     @Test
     void testRemoveEntry() throws IOException {
         this.collection.remove("{name:Globe}");
+        assertEquals(0, Files.size(this.collection.getCollectionPath()));
+        assertEquals(4, this.collection.size());
+        this.collection.commitToFile();
         assertEquals(262, Files.size(this.collection.getCollectionPath()));
         assertEquals(4, this.collection.size());
+
 
         System.out.println(this.collection);
     }

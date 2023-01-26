@@ -8,15 +8,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class AutoCommitFileDatabase implements Database{
-    private final String dbName;
-    private final Path dbPath;
-    private final List<AutoCommitCollection> collections;
+public abstract class DatabaseAbstract implements Database {
+    protected final String dbName;
+    protected final Path dbPath;
+    protected final List<CollectionOfDatabase> collections;
 
-    AutoCommitFileDatabase(Path dbPath) {
+    public DatabaseAbstract(Path dbPath) {
         this.dbName = dbPath.getFileName().toString();
-        this.collections = new ArrayList<>();
         this.dbPath = dbPath;
+        this.collections = new ArrayList<>();
 
         File file = new File(dbPath.toUri());
         if (file.isDirectory()){
@@ -31,7 +31,7 @@ public class AutoCommitFileDatabase implements Database{
         }
     }
 
-    public void useDB(Path dbPath){
+    public void useDB(Path dbPath) {
         try (Stream<Path> paths = Files.walk(dbPath)) {
             paths
                     .filter(Files::isRegularFile)
@@ -41,19 +41,6 @@ public class AutoCommitFileDatabase implements Database{
         }
     }
 
-
     @Override
-    public AutoCommitCollection createCollection(String collName) {
-        Path pathToCollection = (Path.of(dbPath.toString() + "\\" + collName + ".json"));
-
-        File file = new File(pathToCollection.toUri());
-        if (!file.exists()){
-            AutoCommitCollection autoCommitCollection = new AutoCommitCollection(pathToCollection);
-            collections.add(autoCommitCollection);
-            return autoCommitCollection;
-        }
-
-        System.out.println("file exists");
-        return new AutoCommitCollection(pathToCollection);
-    }
+    public abstract CollectionOfDatabase createCollection(String collName);
 }

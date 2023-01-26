@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
@@ -24,6 +25,19 @@ public class CollectionOfDatabaseAbstract implements CollectionOfDatabase {
         this.collection = new LinkedHashMap<>();
         this.collectionName = pathToColl.getFileName().toString();
         this.collectionPath = pathToColl;
+
+
+        File file = new File(pathToColl.toUri());
+        if (!file.exists()){
+            try {
+                Files.createFile(pathToColl);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        else {
+            loadCollection(pathToColl);
+        }
     }
 
     protected void loadCollection(Path collectionPath) {
@@ -38,7 +52,6 @@ public class CollectionOfDatabaseAbstract implements CollectionOfDatabase {
     @Override
     public CollectionOfDatabase useCollection(Path collectionPath) {
         loadCollection(collectionPath);
-        commitToFile();
         return this;
     }
 
@@ -51,7 +64,6 @@ public class CollectionOfDatabaseAbstract implements CollectionOfDatabase {
     public CollectionOfDatabase add(String jsonBody) {
         Entry newEntry = Entry.createEntry(jsonBody);
         this.collection.put(newEntry.getUUID(), newEntry);
-        addToFile(newEntry);
         return this;
     }
 
@@ -148,7 +160,6 @@ public class CollectionOfDatabaseAbstract implements CollectionOfDatabase {
         for (Entry entryToDelete : entriesToEdit) {
             this.collection.get(entryToDelete.getUUID()).editEntry(newValueJsonString);
         }
-        commitToFile();
         return this;
     }
 
@@ -170,7 +181,6 @@ public class CollectionOfDatabaseAbstract implements CollectionOfDatabase {
                 this.collection.get(entryToRemoveFieldsFrom.getUUID()).removeField(keyToRemove);
             }
         }
-        commitToFile();
         return this;
     }
 
@@ -180,14 +190,12 @@ public class CollectionOfDatabaseAbstract implements CollectionOfDatabase {
         for (Entry entryToDelete : entriesToDelete) {
             this.collection.remove(entryToDelete.getUUID());
         }
-        commitToFile();
         return this;
     }
 
     @Override
     public void clear() {
         this.collection.clear();
-        commitToFile();
     }
 
     @Override

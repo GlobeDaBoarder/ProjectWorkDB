@@ -1,0 +1,137 @@
+package base.database;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class AutoCommitFileDatabaseCRUDTest {
+
+    CollectionOfDatabase collection;
+
+    @BeforeEach
+    void init(){
+        this.collection = new AutoCommitDatabaseFactory()
+                .createDatabase("testDBAutomatic")
+                .createCollection("testCollection")
+                .useCollection(Path.of("src/test/resources/sampleCollection.json"));
+    }
+
+    @AfterEach
+    void afterEach(){
+        if(this.collection.getCollectionPath() != null)
+            this.collection.delete();
+    }
+
+    @Test
+    void testCreate() throws IOException {
+        assertEquals(521, Files.size(this.collection.getCollectionPath()));
+        assertEquals(7, this.collection.size());
+        System.out.println(this.collection);
+    }
+
+    @Test
+    void testAdd() throws IOException {
+        this.collection
+                .add("{\"name\":\"Baeldung\",\"java\":\"true\"}")
+                .add("{name:Globe, surname:Ivashyn}")
+                .addAll(
+                        "{\"name\":\"Sarah\"}",
+                        "{\"name\":\"John\"}"
+                )
+                .add("{noname:empty}")
+                .add("{name:Globe, surname:Ivashyn222}")
+                .add("{name:Globe, surname:Ivashyn, hobby:sb}");
+        assertEquals(1042, Files.size(this.collection.getCollectionPath()));
+        assertEquals(14, this.collection.size());
+
+        System.out.println(this.collection);
+    }
+
+    @Test
+    void testReadGetById(){
+
+        System.out.println(collection.getById("86a169a8-82b4-4c4a-bc7b-1f0a71b1a195"));
+        assertEquals("""
+                Entry{fullJson={"id":"86a169a8-82b4-4c4a-bc7b-1f0a71b1a195","name":"Globe","surname":"Ivashyn","hobby":"sb"}}""",
+                collection.getById("86a169a8-82b4-4c4a-bc7b-1f0a71b1a195").toString()
+        );
+    }
+
+    @Test
+    void testReadGetByIndex(){
+        System.out.println(collection.getByIndex(6));
+        assertEquals("""
+                Entry{fullJson={"id":"86a169a8-82b4-4c4a-bc7b-1f0a71b1a195","name":"Globe","surname":"Ivashyn","hobby":"sb"}}""",
+                collection.getByIndex(6).toString()
+        );
+    }
+
+
+    @Test
+    void testReadGetWhere(){
+        System.out.println(collection.getWhere("{name:Globe, surname:Ivashyn}"));
+        assertEquals("""
+                [Entry{fullJson={"id":"e815a45e-e82f-447d-8e4a-60f69dcdbf37","name":"Globe","surname":"Ivashyn"}}, Entry{fullJson={"id":"a43c502a-1eba-4bc8-9e29-c233e16973e8","name":"Globe","surname":"Ivashyn222"}}, Entry{fullJson={"id":"86a169a8-82b4-4c4a-bc7b-1f0a71b1a195","name":"Globe","surname":"Ivashyn","hobby":"sb"}}]""",
+                collection.getWhere("{name:Globe}").toString()
+        );
+    }
+
+    @Test
+    void testReadGetWhereKeyExists(){
+        System.out.println(collection.getWhereKeyExists("hobby", "surname"));
+        assertEquals("""
+                [Entry{fullJson={"id":"86a169a8-82b4-4c4a-bc7b-1f0a71b1a195","name":"Globe","surname":"Ivashyn","hobby":"sb"}}]""",
+                collection.getWhereKeyExists("hobby", "surname").toString()
+        );
+    }
+
+    @Test
+    void testUpdate() throws IOException {
+        this.collection.update("{name:Globe, surname:Ivashyn}",
+                "{surname:Hakkem, age:20}");
+        assertEquals(537, Files.size(this.collection.getCollectionPath()));
+        assertEquals(7, this.collection.size());
+
+        System.out.println(this.collection);
+    }
+
+    @Test
+    void testRemoveEntryField() throws IOException {
+        this.collection.removeEntryField("{name:Globe, surname:Ivashyn}",
+                "surname", "hobby", "age");
+        assertEquals(468, Files.size(this.collection.getCollectionPath()));
+        assertEquals(7, this.collection.size());
+
+        System.out.println(this.collection);
+    }
+
+    @Test
+    void testRemoveEntry() throws IOException {
+        this.collection.remove("{name:Globe}");
+        assertEquals(262, Files.size(this.collection.getCollectionPath()));
+        assertEquals(4, this.collection.size());
+
+        System.out.println(this.collection);
+    }
+
+    @Test
+    void testClear() throws IOException {
+        this.collection.clear();
+        assertEquals(0, Files.size(this.collection.getCollectionPath()));
+        assertEquals(0, this.collection.size());
+    }
+
+    @Test
+    void testDelete(){
+        this.collection.delete();
+        assertThrows(NullPointerException.class, () -> this.collection.size());
+        assertThrows(NullPointerException.class, () -> this.collection.add("{test:test}"));
+    }
+
+}
