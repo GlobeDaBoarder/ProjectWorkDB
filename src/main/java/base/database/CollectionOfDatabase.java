@@ -7,9 +7,9 @@ import java.util.List;
 public interface CollectionOfDatabase {
     CollectionOfDatabase useCollection(Path collectionPath);
 
-    CollectionOfDatabase add(String jsonBody);
+    CollectionOfDatabase addEntry(String jsonBody);
 
-    CollectionOfDatabase addAll(String... jsonBodies);
+    CollectionOfDatabase addAllEntries(String... jsonBodies);
 
     void commitToFile();
 
@@ -29,7 +29,7 @@ public interface CollectionOfDatabase {
 
     List<Entry> getWhereKeyExists(String... searchKeyStrings);
 
-    CollectionOfDatabase update(String searchJsonString, String newValueJsonString);
+    CollectionOfDatabase updateEntry(String searchJsonString, String newValueJsonString);
 
     String getCollectionName();
 
@@ -37,7 +37,7 @@ public interface CollectionOfDatabase {
 
     CollectionOfDatabase removeEntryField(String searchJsonString, String... keysOfFieldToRemove);
 
-    CollectionOfDatabase remove(String searchJsonString);
+    CollectionOfDatabase removeEntry(String searchJsonString);
 
     void clear();
 

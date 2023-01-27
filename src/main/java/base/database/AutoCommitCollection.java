@@ -16,15 +16,15 @@ public class AutoCommitCollection extends CollectionOfDatabaseAbstract {
     }
 
     @Override
-    public CollectionOfDatabase add(String jsonBody) {
-        CollectionOfDatabase result = super.add(jsonBody);
+    public CollectionOfDatabase addEntry(String jsonBody) {
+        CollectionOfDatabase result = super.addEntry(jsonBody);
         commitToFile();
         return result;
     }
 
     @Override
-    public CollectionOfDatabase update(String searchJsonString, String newValueJsonString) {
-        CollectionOfDatabase result = super.update(searchJsonString, newValueJsonString);
+    public CollectionOfDatabase updateEntry(String searchJsonString, String newValueJsonString) {
+        CollectionOfDatabase result = super.updateEntry(searchJsonString, newValueJsonString);
         commitToFile();
         return result;
     }
@@ -37,8 +37,8 @@ public class AutoCommitCollection extends CollectionOfDatabaseAbstract {
     }
 
     @Override
-    public CollectionOfDatabase remove(String searchJsonString) {
-        CollectionOfDatabase result =  super.remove(searchJsonString);
+    public CollectionOfDatabase removeEntry(String searchJsonString) {
+        CollectionOfDatabase result =  super.removeEntry(searchJsonString);
         commitToFile();
         return result;
     }

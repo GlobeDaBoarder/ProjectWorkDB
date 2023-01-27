@@ -2,6 +2,8 @@ package org.example;
 
 import base.database.*;
 
+import java.util.Collection;
+
 public class Main {
     public static void main(String[] args) {
 
@@ -38,12 +40,23 @@ public class Main {
 //        collection.remove("{name:Globe}");
 //
 //        collection.clear();
+//
 
-        ManualCommitDatabaseFactory factory = new ManualCommitDatabaseFactory();
-        ManualCommitDatabase db = factory.createDatabase("mainDb");
-        ManualCommitCollection collection = db.createCollection("col1");
-        collection.add("{name:Globe}");
+        AutoCommitDatabase db = new AutoCommitDatabaseFactory()
+                .createDatabase("autoDB");
+
+        AutoCommitCollection collection = db.createCollection("col1");
+
+        collection.clear();
+        collection.addAllEntries(
+                "{name:Globe}",
+                "{name:Fred,hobby:skate}"
+        );
+
         Entry entry = collection.getByIndex(0);
+        entry.editEntry("{name:Globe2}");
+
+
 
 
     }

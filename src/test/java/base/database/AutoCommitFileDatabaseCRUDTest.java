@@ -38,15 +38,15 @@ public class AutoCommitFileDatabaseCRUDTest {
     @Test
     void testAdd() throws IOException {
         this.collection
-                .add("{\"name\":\"Baeldung\",\"java\":\"true\"}")
-                .add("{name:Globe, surname:Ivashyn}")
-                .addAll(
+                .addEntry("{\"name\":\"Baeldung\",\"java\":\"true\"}")
+                .addEntry("{name:Globe, surname:Ivashyn}")
+                .addAllEntries(
                         "{\"name\":\"Sarah\"}",
                         "{\"name\":\"John\"}"
                 )
-                .add("{noname:empty}")
-                .add("{name:Globe, surname:Ivashyn222}")
-                .add("{name:Globe, surname:Ivashyn, hobby:sb}");
+                .addEntry("{noname:empty}")
+                .addEntry("{name:Globe, surname:Ivashyn222}")
+                .addEntry("{name:Globe, surname:Ivashyn, hobby:sb}");
         assertEquals(1042, Files.size(this.collection.getCollectionPath()));
         assertEquals(14, this.collection.size());
 
@@ -93,7 +93,7 @@ public class AutoCommitFileDatabaseCRUDTest {
 
     @Test
     void testUpdate() throws IOException {
-        this.collection.update("{name:Globe, surname:Ivashyn}",
+        this.collection.updateEntry("{name:Globe, surname:Ivashyn}",
                 "{surname:Hakkem, age:20}");
         assertEquals(537, Files.size(this.collection.getCollectionPath()));
         assertEquals(7, this.collection.size());
@@ -113,7 +113,7 @@ public class AutoCommitFileDatabaseCRUDTest {
 
     @Test
     void testRemoveEntry() throws IOException {
-        this.collection.remove("{name:Globe}");
+        this.collection.removeEntry("{name:Globe}");
         assertEquals(262, Files.size(this.collection.getCollectionPath()));
         assertEquals(4, this.collection.size());
 
@@ -131,7 +131,7 @@ public class AutoCommitFileDatabaseCRUDTest {
     void testDelete(){
         this.collection.delete();
         assertThrows(NullPointerException.class, () -> this.collection.size());
-        assertThrows(NullPointerException.class, () -> this.collection.add("{test:test}"));
+        assertThrows(NullPointerException.class, () -> this.collection.addEntry("{test:test}"));
     }
 
 }

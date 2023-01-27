@@ -61,16 +61,16 @@ class CollectionOfDatabaseAbstract implements CollectionOfDatabase {
     }
 
     @Override
-    public CollectionOfDatabase add(String jsonBody) {
+    public CollectionOfDatabase addEntry(String jsonBody) {
         Entry newEntry = Entry.createEntry(jsonBody);
         this.collection.put(newEntry.getUUID(), newEntry);
         return this;
     }
 
     @Override
-    public CollectionOfDatabase addAll(String... jsonBodies) {
+    public CollectionOfDatabase addAllEntries(String... jsonBodies) {
         for (String jsonBody : jsonBodies) {
-            add(jsonBody);
+            addEntry(jsonBody);
         }
         return this;
     }
@@ -155,7 +155,7 @@ class CollectionOfDatabaseAbstract implements CollectionOfDatabase {
     }
 
     @Override
-    public CollectionOfDatabase update(String searchJsonString, String newValueJsonString) {
+    public CollectionOfDatabase updateEntry(String searchJsonString, String newValueJsonString) {
         List<Entry> entriesToEdit = getWhere(searchJsonString);
         for (Entry entryToDelete : entriesToEdit) {
             this.collection.get(entryToDelete.getUUID()).editEntry(newValueJsonString);
@@ -185,7 +185,7 @@ class CollectionOfDatabaseAbstract implements CollectionOfDatabase {
     }
 
     @Override
-    public CollectionOfDatabase remove(String searchJsonString) {
+    public CollectionOfDatabase removeEntry(String searchJsonString) {
         List<Entry> entriesToDelete = getWhere(searchJsonString);
         for (Entry entryToDelete : entriesToDelete) {
             this.collection.remove(entryToDelete.getUUID());

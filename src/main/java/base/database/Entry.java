@@ -41,7 +41,7 @@ public class Entry {
         return UUID.fromString(this.fullJson.get("id").getAsString());
     }
 
-    public JsonObject getJson() {
+    JsonObject getJson() {
         return fullJson;
     }
 
