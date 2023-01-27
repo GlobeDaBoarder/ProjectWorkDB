@@ -13,11 +13,13 @@ import static org.junit.jupiter.api.Assertions.*;
 class AutoCommitEntryTest {
     AutoCommitCollection collection;
     Entry entry;
+    AutoCommitDatabase db;
 
     @BeforeEach
     void init(){
-        this.collection = new AutoCommitDatabaseFactory()
-                .createDatabase("testEntryAutomatic")
+        this.db = new AutoCommitDatabaseFactory()
+                .createDatabase("testEntryAutomatic");
+        this.collection = db
                 .createCollection("testCollection")
                 .useCollection(Path.of("src/test/resources/sampleCollection.json"));
 
@@ -26,8 +28,7 @@ class AutoCommitEntryTest {
 
     @AfterEach
     void afterEach(){
-        if(this.collection.getCollectionPath() != null)
-            this.collection.delete();
+        this.db.deleteDatabase();
     }
 
     @Test

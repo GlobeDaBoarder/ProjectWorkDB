@@ -43,4 +43,39 @@ abstract class DatabaseAbstract implements Database {
 
     @Override
     public abstract CollectionOfDatabase createCollection(String collName);
+
+    @Override
+    public void deleteDatabase() {
+        this.collections.forEach(CollectionOfDatabase::delete);
+
+        try {
+            Files.deleteIfExists(this.dbPath);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void deleteCollection(String collectionName) {
+        for (CollectionOfDatabase collection : this.collections) {
+            if(collection.getCollectionName().equals(collectionName.concat(".json"))) {
+                try {
+                    this.collections.remove(collection);
+                    Files.delete(collection.getCollectionPath());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+    }
+
+    @Override
+    public Path getPath() {
+        return this.dbPath;
+    }
+
+    @Override
+    public List<CollectionOfDatabase> getCollections() {
+        return this.collections;
+    }
 }

@@ -30,6 +30,11 @@ public class TestChaining {
 
         assertEquals(6, collection.size());
         assertEquals(430, Files.size(collection.getCollectionPath()));
+
+        Entry entry = collection.getByIndex(0);
+        entry.removeField("name");
+        assertEquals(415, Files.size(collection.getCollectionPath()));
+
         collection.printAll();
         collection.delete();
     }
@@ -54,6 +59,11 @@ public class TestChaining {
 
         assertEquals(6, collectionConcrete.size());
         assertEquals(430, Files.size(collectionConcrete.getCollectionPath()));
+
+        Entry entry = collectionConcrete.getByIndex(0);
+        entry.removeField("name");
+        assertEquals(415, Files.size(collectionConcrete.getCollectionPath()));
+
         collectionConcrete.printAll();
         collectionConcrete.delete();
     }

@@ -14,10 +14,13 @@ class ManualCommitEntryTest {
     ManualCommitCollection collection;
     Entry entry;
 
+    ManualCommitDatabase db;
+
     @BeforeEach
     void init(){
-        this.collection = new ManualCommitDatabaseFactory()
-                .createDatabase("testEntryManual")
+        this.db =  new ManualCommitDatabaseFactory()
+                .createDatabase("testEntryManual");
+        this.collection = db
                 .createCollection("testCollection")
                 .useCollection(Path.of("src/test/resources/sampleCollection.json"));
 
@@ -25,8 +28,7 @@ class ManualCommitEntryTest {
     }
     @AfterEach
     void afterEach(){
-        if(this.collection.getCollectionPath() != null)
-            this.collection.delete();
+        this.db.deleteDatabase();
     }
 
     @Test
