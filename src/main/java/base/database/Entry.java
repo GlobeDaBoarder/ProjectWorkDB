@@ -8,27 +8,21 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-public class Entry {
+abstract public class Entry {
+    protected final JsonObject fullJson;
 
-    private final JsonObject fullJson;
-
-    Entry(String jsonBody) {
-        //isValidJson(json);
+    public Entry(String jsonBody) {
         this.fullJson = JsonParser.parseString(prependId(
                 UUID.randomUUID(),
                 jsonBody
         )).getAsJsonObject();
     }
 
-    private static String prependId(UUID uuid, String jsonParams) {
+    protected static String prependId(UUID uuid, String jsonParams) {
         return "{\"id\" : \"" +
                 uuid +
                 "\", " +
                 jsonParams.substring(1);
-    }
-
-    static Entry readExistingEntry(String fullJson){
-        return new Entry(fullJson);
     }
 
     public UUID getUUID() {
@@ -56,11 +50,6 @@ public class Entry {
         this.fullJson.remove(keyToRemove);
     }
 
-
-    //equals & hashCode
-
-
-    @Override
     public String toString() {
         return "Entry{" +
                 "fullJson=" + fullJson +

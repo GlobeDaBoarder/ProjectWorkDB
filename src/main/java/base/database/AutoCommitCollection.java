@@ -9,38 +9,45 @@ public class AutoCommitCollection extends CollectionOfDatabaseAbstract {
     }
 
     @Override
-    public CollectionOfDatabase useCollection(Path collectionPath) {
-        CollectionOfDatabase result = super.useCollection(collectionPath);
+    public AutoCommitCollection useCollection(Path collectionPath) {
+        super.useCollection(collectionPath);
         commitToFile();
-        return result;
+        return this;
     }
 
     @Override
-    public CollectionOfDatabase addEntry(String jsonBody) {
-        CollectionOfDatabase result = super.addEntry(jsonBody);
-        commitToFile();
-        return result;
+    protected void readEntryIntoCollection(String fullJson) {
+        AutoCommitEntry existingEntry = new AutoCommitEntry(fullJson, this);
+        this.collection.put(existingEntry.getUUID(), existingEntry);
     }
 
     @Override
-    public CollectionOfDatabase updateEntry(String searchJsonString, String newValueJsonString) {
-        CollectionOfDatabase result = super.updateEntry(searchJsonString, newValueJsonString);
+    public AutoCommitCollection addEntry(String jsonBody) {
+        AutoCommitEntry newEntry = new AutoCommitEntry(jsonBody, this);
+        this.collection.put(newEntry.getUUID(), newEntry);
         commitToFile();
-        return result;
+        return this;
     }
 
     @Override
-    public CollectionOfDatabase removeEntryField(String searchJsonString, String... keysOfFieldToRemove) {
-        CollectionOfDatabase result = super.removeEntryField(searchJsonString, keysOfFieldToRemove);
+    public AutoCommitCollection updateEntry(String searchJsonString, String newValueJsonString) {
+        super.updateEntry(searchJsonString, newValueJsonString);
         commitToFile();
-        return result;
+        return this;
     }
 
     @Override
-    public CollectionOfDatabase removeEntry(String searchJsonString) {
-        CollectionOfDatabase result =  super.removeEntry(searchJsonString);
+    public AutoCommitCollection removeEntryField(String searchJsonString, String... keysOfFieldToRemove) {
+        super.removeEntryField(searchJsonString, keysOfFieldToRemove);
         commitToFile();
-        return result;
+        return this;
+    }
+
+    @Override
+    public AutoCommitCollection removeEntry(String searchJsonString) {
+        super.removeEntry(searchJsonString);
+        commitToFile();
+        return this;
     }
 
     @Override

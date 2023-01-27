@@ -11,14 +11,14 @@ import java.nio.file.Path;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class ManualCommitFileDatabaseCRUDTest {
+class ManualCommitCollectionCRUDTest {
 
-    CollectionOfDatabase collection;
+    ManualCommitCollection collection;
 
     @BeforeEach
     void init(){
         this.collection = new ManualCommitDatabaseFactory()
-                .createDatabase("testDBManual")
+                .createDatabase("testCollectionManual")
                 .createCollection("testCollection")
                 .useCollection(Path.of("src/test/resources/sampleCollection.json"));
     }

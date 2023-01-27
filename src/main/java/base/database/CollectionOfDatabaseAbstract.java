@@ -15,7 +15,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-class CollectionOfDatabaseAbstract implements CollectionOfDatabase {
+abstract class CollectionOfDatabaseAbstract implements CollectionOfDatabase {
     //make multi threaded
     protected Map<UUID, Entry> collection;
     protected String collectionName;
@@ -55,17 +55,10 @@ class CollectionOfDatabaseAbstract implements CollectionOfDatabase {
         return this;
     }
 
-    private void readEntryIntoCollection(String fullJson) {
-        Entry existingEntry = Entry.readExistingEntry(fullJson);
-        this.collection.put(existingEntry.getUUID(), existingEntry);
-    }
+    protected abstract void readEntryIntoCollection(String fullJson);
 
     @Override
-    public CollectionOfDatabase addEntry(String jsonBody) {
-        Entry newEntry = new Entry(jsonBody);
-        this.collection.put(newEntry.getUUID(), newEntry);
-        return this;
-    }
+    abstract public CollectionOfDatabase addEntry(String jsonBody);
 
     @Override
     public CollectionOfDatabase addAllEntries(String... jsonBodies) {

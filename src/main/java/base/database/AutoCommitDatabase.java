@@ -23,4 +23,5 @@ public class AutoCommitDatabase extends DatabaseAbstract {
 
         return new AutoCommitCollection(pathToCollection);
     }
+
 }

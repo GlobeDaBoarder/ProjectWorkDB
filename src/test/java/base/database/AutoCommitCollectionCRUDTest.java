@@ -10,14 +10,14 @@ import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class AutoCommitFileDatabaseCRUDTest {
+public class AutoCommitCollectionCRUDTest {
 
-    CollectionOfDatabase collection;
+    AutoCommitCollection collection;
 
     @BeforeEach
     void init(){
         this.collection = new AutoCommitDatabaseFactory()
-                .createDatabase("testDBAutomatic")
+                .createDatabase("testCollectionAutomatic")
                 .createCollection("testCollection")
                 .useCollection(Path.of("src/test/resources/sampleCollection.json"));
     }
