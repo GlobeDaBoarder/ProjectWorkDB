@@ -55,4 +55,10 @@ public class AutoCommitCollection extends CollectionOfDatabaseAbstract {
         super.clear();
         commitToFile();
     }
+
+    @Override
+    public AutoCommitCollection addAllEntries(String... jsonBodies) {
+        super.addAllEntries(jsonBodies);
+        return this;
+    }
 }

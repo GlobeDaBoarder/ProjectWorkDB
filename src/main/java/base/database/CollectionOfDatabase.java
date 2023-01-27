@@ -13,7 +13,7 @@ public interface CollectionOfDatabase {
 
     void commitToFile();
 
-    CollectionOfDatabase printAll();
+    void printAll();
 
     void pintWithId(String searchUuid);
 

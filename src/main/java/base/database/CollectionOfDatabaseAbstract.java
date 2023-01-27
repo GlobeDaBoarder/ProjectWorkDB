@@ -90,10 +90,8 @@ abstract class CollectionOfDatabaseAbstract implements CollectionOfDatabase {
     }
 
     @Override
-    public CollectionOfDatabase printAll() {
-        getAll().forEach(System.out::println);
-        System.out.println('\n');
-        return this;
+    public void printAll() {
+        System.out.println(this);
     }
 
     @Override
