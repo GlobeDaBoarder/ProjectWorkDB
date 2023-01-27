@@ -12,13 +12,12 @@ public class Entry {
 
     private final JsonObject fullJson;
 
-    static Entry createEntry(String jsonParams){
-        return new Entry(
-                prependId(
-                        UUID.randomUUID(),
-                        jsonParams
-                )
-        );
+    Entry(String jsonBody) {
+        //isValidJson(json);
+        this.fullJson = JsonParser.parseString(prependId(
+                UUID.randomUUID(),
+                jsonBody
+        )).getAsJsonObject();
     }
 
     private static String prependId(UUID uuid, String jsonParams) {
@@ -30,11 +29,6 @@ public class Entry {
 
     static Entry readExistingEntry(String fullJson){
         return new Entry(fullJson);
-    }
-
-    private Entry(String fullJson) {
-        //isValidJson(json);
-        this.fullJson = JsonParser.parseString(fullJson).getAsJsonObject();
     }
 
     public UUID getUUID() {

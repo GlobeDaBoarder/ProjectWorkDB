@@ -62,7 +62,7 @@ class CollectionOfDatabaseAbstract implements CollectionOfDatabase {
 
     @Override
     public CollectionOfDatabase addEntry(String jsonBody) {
-        Entry newEntry = Entry.createEntry(jsonBody);
+        Entry newEntry = new Entry(jsonBody);
         this.collection.put(newEntry.getUUID(), newEntry);
         return this;
     }
