@@ -17,9 +17,9 @@ import java.util.stream.Stream;
 
 abstract class CollectionOfDatabaseAbstract implements CollectionOfDatabase {
     //make multi threaded
-    protected Map<UUID, Entry> collection;
-    protected String collectionName;
-    protected Path collectionPath;
+    protected final Map<UUID, Entry> collection;
+    protected final String collectionName;
+    protected final Path collectionPath;
 
     CollectionOfDatabaseAbstract(Path pathToColl) {
         this.collection = new LinkedHashMap<>();
@@ -187,18 +187,6 @@ abstract class CollectionOfDatabaseAbstract implements CollectionOfDatabase {
     @Override
     public void clear() {
         this.collection.clear();
-    }
-
-    @Override
-    public void delete() {
-        try {
-            Files.delete(this.collectionPath);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        this.collection = null;
-        this.collectionPath = null;
-        this.collectionName = null;
     }
 
     @Override

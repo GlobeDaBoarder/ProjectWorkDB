@@ -36,7 +36,7 @@ public class TestChaining {
         assertEquals(415, Files.size(collection.getCollectionPath()));
 
         collection.printAll();
-        collection.delete();
+        db.deleteDatabase();
     }
 
     @Test
@@ -65,7 +65,7 @@ public class TestChaining {
         assertEquals(415, Files.size(collectionConcrete.getCollectionPath()));
 
         collectionConcrete.printAll();
-        collectionConcrete.delete();
+        dbConcrete.deleteDatabase();
     }
 
 
@@ -92,7 +92,7 @@ public class TestChaining {
         collectionConcrete.commitToFile();
         assertEquals(430, Files.size(collectionConcrete.getCollectionPath()));
         collectionConcrete.printAll();
-        collectionConcrete.delete();
+        dbConcrete.deleteDatabase();
     }
 
 

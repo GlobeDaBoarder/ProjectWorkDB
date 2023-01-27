@@ -36,12 +36,6 @@ abstract public class Entry {
     public void editEntry(String newValueJsonString) {
         Set<Map.Entry<String, JsonElement>> newValuesSet = JsonParser.parseString(newValueJsonString).getAsJsonObject().entrySet();
         for (Map.Entry<String, JsonElement> newValue : newValuesSet) {
-//            if(this.fullJson.has(newValue.getKey())){
-//                this.fullJson.add(newValue.getKey(), newValue.getValue());
-//            }
-//            else {
-//                this.fullJson.add();
-//            }
             this.fullJson.add(newValue.getKey(), newValue.getValue());
         }
     }

@@ -46,7 +46,14 @@ abstract class DatabaseAbstract implements Database {
 
     @Override
     public void deleteDatabase() {
-        this.collections.forEach(CollectionOfDatabase::delete);
+        this.collections.forEach(collection ->{
+            try {
+                Files.delete(collection.getCollectionPath());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+        });
 
         try {
             Files.deleteIfExists(this.dbPath);

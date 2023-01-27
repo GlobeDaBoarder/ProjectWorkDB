@@ -41,7 +41,5 @@ public interface CollectionOfDatabase {
 
     void clear();
 
-    void delete();
-
     int size();
 }
