@@ -9,6 +9,8 @@ public interface CollectionOfDatabase {
 
     CollectionOfDatabase addEntry(String jsonBody);
 
+    CollectionOfDatabase addEntry(Object serializableObject);
+
     CollectionOfDatabase addAllEntries(String... jsonBodies);
 
     void commitToFile();

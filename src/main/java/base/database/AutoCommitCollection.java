@@ -30,6 +30,12 @@ public class AutoCommitCollection extends CollectionOfDatabaseAbstract {
     }
 
     @Override
+    public AutoCommitCollection addEntry(Object serializableObject) {
+        super.addEntry(serializableObject);
+        return this;
+    }
+
+    @Override
     public AutoCommitCollection updateEntry(String searchJsonString, String newValueJsonString) {
         super.updateEntry(searchJsonString, newValueJsonString);
         commitToFile();

@@ -27,6 +27,12 @@ public class ManualCommitCollection extends CollectionOfDatabaseAbstract{
     }
 
     @Override
+    public ManualCommitCollection addEntry(Object serializableObject) {
+        super.addEntry(serializableObject);
+        return this;
+    }
+
+    @Override
     public ManualCommitCollection addAllEntries(String... jsonBodies) {
         super.addAllEntries(jsonBodies);
         return this;

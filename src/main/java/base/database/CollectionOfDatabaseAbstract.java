@@ -1,5 +1,7 @@
 package base.database;
 
+import base.annotation.JsonSerializationException;
+import base.annotation.ObjectToJsonConverter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -59,6 +61,17 @@ abstract class CollectionOfDatabaseAbstract implements CollectionOfDatabase {
 
     @Override
     abstract public CollectionOfDatabase addEntry(String jsonBody);
+
+    @Override
+    public CollectionOfDatabase addEntry(Object serializableObject) {
+        try {
+            String jsonBody = new ObjectToJsonConverter().convertToJson(serializableObject);
+            addEntry(jsonBody);
+        } catch (JsonSerializationException e) {
+            throw new RuntimeException(e);
+        }
+        return this;
+    }
 
     @Override
     public CollectionOfDatabase addAllEntries(String... jsonBodies) {

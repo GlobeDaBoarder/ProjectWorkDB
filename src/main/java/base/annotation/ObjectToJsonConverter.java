@@ -1,6 +1,7 @@
 package base.annotation;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +32,7 @@ public class ObjectToJsonConverter {
         }
     }
 
-    private void initializeObject(Object object) throws Exception {
+    private void initializeObject(Object object) throws InvocationTargetException, IllegalAccessException {
         Class<?> clazz = object.getClass();
         for (Method method : clazz.getDeclaredMethods()) {
             if (method.isAnnotationPresent(InitMethod.class)) {
