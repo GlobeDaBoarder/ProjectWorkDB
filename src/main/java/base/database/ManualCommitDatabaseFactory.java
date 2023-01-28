@@ -2,11 +2,21 @@ package base.database;
 
 import java.nio.file.Path;
 
-public class ManualCommitDatabaseFactory implements DatabaseFactory{
+public class ManualCommitDatabaseFactory extends DatabaseFactoryAbstract{
+    public ManualCommitDatabaseFactory(Path pathToDatabase) {
+        super(pathToDatabase);
+    }
+
+    public ManualCommitDatabaseFactory(String pathStringToDatabase) {
+        super(pathStringToDatabase);
+    }
+
+    public ManualCommitDatabaseFactory() {
+        super();
+    }
 
     @Override
     public ManualCommitDatabase createDatabase(String databaseName) {
-        Path pathToDb = Path.of("D:\\CopyProject\\CopyProject\\ProjectWorkDB\\dbs\\" + databaseName);
-        return new ManualCommitDatabase(pathToDb);
+        return new ManualCommitDatabase(createPathOfDatabase(databaseName));
     }
 }

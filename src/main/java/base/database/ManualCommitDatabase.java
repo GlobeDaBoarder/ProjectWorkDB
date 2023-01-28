@@ -10,7 +10,7 @@ public class ManualCommitDatabase extends DatabaseAbstract {
 
     @Override
     public ManualCommitCollection createCollection(String collName) {
-        Path pathToCollection = (Path.of(dbPath.toString() + "\\" + collName + ".json"));
+        Path pathToCollection = (Path.of(pathToDatabase.toString() + "\\" + collName + ".json"));
 
         File file = new File(pathToCollection.toUri());
         if (!file.exists()){

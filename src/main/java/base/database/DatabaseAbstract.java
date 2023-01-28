@@ -9,22 +9,22 @@ import java.util.List;
 import java.util.stream.Stream;
 
 abstract class DatabaseAbstract implements Database {
-    protected final String dbName;
-    protected final Path dbPath;
+    protected final String nameOfDatabase;
+    protected final Path pathToDatabase;
     protected final List<CollectionOfDatabase> collections;
 
-    public DatabaseAbstract(Path dbPath) {
-        this.dbName = dbPath.getFileName().toString();
-        this.dbPath = dbPath;
+    public DatabaseAbstract(Path pathToDatabase) {
+        this.nameOfDatabase = pathToDatabase.getFileName().toString();
+        this.pathToDatabase = pathToDatabase;
         this.collections = new ArrayList<>();
 
-        File file = new File(dbPath.toUri());
+        File file = new File(pathToDatabase.toUri());
         if (file.isDirectory()){
-            useDB(dbPath);
+            useDB(pathToDatabase);
         }
         else{
             try {
-                Files.createDirectory(dbPath);
+                Files.createDirectory(pathToDatabase);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -56,7 +56,7 @@ abstract class DatabaseAbstract implements Database {
         });
 
         try {
-            Files.deleteIfExists(this.dbPath);
+            Files.deleteIfExists(this.pathToDatabase);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -78,7 +78,7 @@ abstract class DatabaseAbstract implements Database {
 
     @Override
     public Path getPath() {
-        return this.dbPath;
+        return this.pathToDatabase;
     }
 
     @Override
