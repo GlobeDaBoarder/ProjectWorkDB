@@ -28,6 +28,7 @@ public class TestChaining {
                 .removeEntry("{name:Baeldung}")
                 .removeEntryField("{name:Margo}", "hobby");
 
+
         assertEquals(6, collection.size());
         assertEquals(430, Files.size(collection.getCollectionPath()));
 
@@ -91,6 +92,13 @@ public class TestChaining {
         assertEquals(0, Files.size(collectionConcrete.getCollectionPath()));
         collectionConcrete.commitToFile();
         assertEquals(430, Files.size(collectionConcrete.getCollectionPath()));
+
+        Entry entry = collectionConcrete.getByIndex(0);
+        entry.removeField("name");
+        collectionConcrete.commitToFile();
+        assertEquals(415, Files.size(collectionConcrete.getCollectionPath()));
+
+
         collectionConcrete.printAll();
         dbConcrete.deleteDatabase();
     }
