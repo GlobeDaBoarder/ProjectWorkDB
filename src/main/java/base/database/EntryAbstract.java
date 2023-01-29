@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-abstract public class EntryAbstract implements Entry {
+abstract class EntryAbstract implements Entry {
     protected final JsonObject fullJson;
 
     public EntryAbstract(String jsonBody) {
