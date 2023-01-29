@@ -1,6 +1,6 @@
 package base.database;
 
-class AutoCommitEntry extends Entry {
+class AutoCommitEntry extends EntryAbstract {
 
     private final AutoCommitCollection parentCollection;
     public AutoCommitEntry(String jsonBody, AutoCommitCollection parentCollection) {

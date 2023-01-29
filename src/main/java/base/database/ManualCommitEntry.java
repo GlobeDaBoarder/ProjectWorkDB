@@ -1,6 +1,6 @@
 package base.database;
 
-class ManualCommitEntry extends Entry {
+class ManualCommitEntry extends EntryAbstract {
 
     ManualCommitEntry(String jsonBody) {
         //isValidJson(json);
