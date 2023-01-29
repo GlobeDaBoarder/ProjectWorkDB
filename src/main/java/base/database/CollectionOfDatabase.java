@@ -13,6 +13,8 @@ public interface CollectionOfDatabase {
 
     CollectionOfDatabase addAllEntries(String... jsonBodies);
 
+    CollectionOfDatabase addAllEntries(Object... serializableObjects);
+
     void commitToFile();
 
     void printAll();

@@ -81,6 +81,14 @@ abstract class CollectionOfDatabaseAbstract implements CollectionOfDatabase {
         return this;
     }
 
+    @Override
+    public CollectionOfDatabase addAllEntries(Object... serializableObjects) {
+        for (Object serializableObject : serializableObjects) {
+            addEntry(serializableObject);
+        }
+        return this;
+    }
+
     private void addToFile(Entry entry) {
         try (Writer writer = new FileWriter(collectionPath.toFile(), true)) {
             Gson gson = new GsonBuilder()

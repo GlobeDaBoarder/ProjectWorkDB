@@ -67,4 +67,10 @@ public class AutoCommitCollection extends CollectionOfDatabaseAbstract {
         super.addAllEntries(jsonBodies);
         return this;
     }
+
+    @Override
+    public AutoCommitCollection addAllEntries(Object... serializableObjects) {
+        super.addAllEntries(serializableObjects);
+        return this;
+    }
 }
