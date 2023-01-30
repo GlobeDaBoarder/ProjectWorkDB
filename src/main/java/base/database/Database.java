@@ -10,6 +10,8 @@ public interface Database {
 
     List<CollectionOfDatabase> getCollections();
 
+    CollectionOfDatabase getCollection(String collectionName);
+
     void deleteCollection(String collectionName);
 
     Path getPath();

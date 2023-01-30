@@ -131,8 +131,16 @@ abstract class CollectionOfDatabaseAbstract implements CollectionOfDatabase {
     }
 
     @Override
-    public Collection<Entry> getAll() {
-        return this.collection.values();
+    public List<Entry> getAll() {
+        return this.collection.values().stream().toList();
+    }
+
+    @Override
+    public List<Object> getAllAsObject(Class<?> clazz) {
+        return this.collection.values()
+                .stream()
+                .map(entry -> entry.asObject(clazz))
+                .toList();
     }
 
     @Override

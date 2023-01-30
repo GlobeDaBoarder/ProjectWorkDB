@@ -1,5 +1,6 @@
 package base.database;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -46,6 +47,11 @@ abstract class EntryAbstract implements Entry {
     @Override
     public void removeField(String keyToRemove) {
         this.fullJson.remove(keyToRemove);
+    }
+
+    @Override
+    public Object asObject(Class<?> clazz) {
+        return new Gson().fromJson(this.fullJson, clazz);
     }
 
     public String toString() {

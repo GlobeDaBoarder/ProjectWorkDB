@@ -12,4 +12,6 @@ public interface Entry {
     void editEntry(String newValueJsonString);
 
     void removeField(String keyToRemove);
+
+    Object asObject(Class<?> clazz);
 }

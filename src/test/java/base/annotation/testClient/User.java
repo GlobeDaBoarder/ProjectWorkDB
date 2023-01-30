@@ -1,13 +1,18 @@
 package base.annotation.testClient;
 
-import base.annotation.JsonField;
-import base.annotation.JsonSerializable;
+import base.annotation.Id;
+import base.annotation.Property;
+import base.annotation.GlobeDbEntity;
 
-@JsonSerializable
+import java.util.UUID;
+
+@GlobeDbEntity
 public class User {
-    @JsonField
+    @Id
+    private UUID id;
+    @Property
     private String username;
-    @JsonField
+    @Property
     private String password;
     private int age;
 
@@ -18,5 +23,37 @@ public class User {
 
     private void initMethodToTest(){
         System.out.println("init!");
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
     }
 }

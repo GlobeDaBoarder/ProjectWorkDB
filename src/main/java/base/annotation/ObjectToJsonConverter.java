@@ -3,6 +3,7 @@ package base.annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -25,10 +26,15 @@ public class ObjectToJsonConverter {
         }
 
         Class<?> clazz = object.getClass();
-        if (!clazz.isAnnotationPresent(JsonSerializable.class)) {
+        if (!clazz.isAnnotationPresent(GlobeDbEntity.class)) {
             throw new JsonSerializationException("The class "
                     + clazz.getSimpleName()
-                    + " is not annotated with JsonSerializable");
+                    + " is not annotated with @GlobeDbEntity");
+        }
+        if (Arrays.stream(clazz.getDeclaredFields()).noneMatch(field -> field.isAnnotationPresent(Id.class))) {
+            throw new JsonSerializationException("The class "
+                    + clazz.getSimpleName()
+                    + " does not have a field with @Id annotation");
         }
     }
 
@@ -47,7 +53,7 @@ public class ObjectToJsonConverter {
         Map<String, String> jsonElementsMap = new HashMap<>();
         for (Field field : clazz.getDeclaredFields()) {
             field.setAccessible(true);
-            if (field.isAnnotationPresent(JsonField.class)) {
+            if (field.isAnnotationPresent(Property.class)) {
                 jsonElementsMap.put(field.getName(), (String) field.get(object));
             }
         }

@@ -85,4 +85,15 @@ abstract class DatabaseAbstract implements Database {
     public List<CollectionOfDatabase> getCollections() {
         return this.collections;
     }
+
+    @Override
+    public CollectionOfDatabase getCollection(String collectionName) {
+        for (CollectionOfDatabase collection : this.collections) {
+            if(collection.getCollectionName().equals(collectionName+".json")){
+                return collection;
+            }
+        }
+
+        return null;
+    }
 }

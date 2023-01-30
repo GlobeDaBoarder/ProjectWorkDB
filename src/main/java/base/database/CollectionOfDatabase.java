@@ -1,7 +1,6 @@
 package base.database;
 
 import java.nio.file.Path;
-import java.util.Collection;
 import java.util.List;
 
 public interface CollectionOfDatabase {
@@ -25,7 +24,9 @@ public interface CollectionOfDatabase {
 
     Entry getByIndex(int index);
 
-    Collection<Entry> getAll();
+    List<Entry> getAll();
+
+    List<Object> getAllAsObject(Class<?> clazz);
 
     Entry getById(String searchUuid);
 

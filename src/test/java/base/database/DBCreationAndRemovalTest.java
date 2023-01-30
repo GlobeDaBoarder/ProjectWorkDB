@@ -30,6 +30,14 @@ public class DBCreationAndRemovalTest {
         assertEquals(1, db.getCollections().size());
     }
 
+    @Test
+    void getCollectionByNameTest(){
+        CollectionOfDatabase colInit = db.createCollection("col3");
+        CollectionOfDatabase colGet = db.getCollection("col3");
+
+        assertEquals(colInit.getCollectionName(), colGet.getCollectionName());
+    }
+
     @AfterEach
     void deleteDb(){
         db.deleteDatabase();
